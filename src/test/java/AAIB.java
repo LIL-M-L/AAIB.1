@@ -37,7 +37,6 @@ public class AAIB {
         Assert.assertEquals(response.getStatusCode(), 201, "User creation should return 201");
         userId = String.valueOf(response.jsonPath().getString("id"));
 
-
         Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
         Assert.assertEquals(response.jsonPath().getString("job"), originalJob);
 
