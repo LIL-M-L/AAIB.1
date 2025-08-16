@@ -56,6 +56,8 @@ public class AAIB {
 
         System.out.println("Response Body: " + response.asString());
         System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.asString());
     }
+
 
 }
