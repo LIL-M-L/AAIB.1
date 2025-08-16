@@ -44,7 +44,7 @@ public class AAIB {
         System.out.println("Created user with ID: " + userId);
     }
 
-    @Test(priority = 2)
+    @Test
     public void testUpdateUser() {
         JSONObject updateBody = new JSONObject();
         updateBody.put("name", "Manar Aziz");
@@ -65,7 +65,7 @@ public class AAIB {
         System.out.println("User updated successfully: " + response.asString());
     }
 
-    @Test(priority = 3)
+    @Test
     public void testGetUserAfterUpdate() {
         Response response = given()
                 .when()
@@ -80,7 +80,7 @@ public class AAIB {
         System.out.println("Verified updated user: " + response.asString());
     }
 
-    @Test(priority = 4)
+    @Test
     public void testDeleteUser() {
         Response response = given()
                 .when()
@@ -94,7 +94,7 @@ public class AAIB {
         System.out.println("User deleted successfully");
     }
 
-    @Test(priority = 5)
+    @Test
     public void testVerifyUserDeletion() {
         Response response = given()
                 .when()
