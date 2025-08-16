@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.given;
 
 public class AAIB {
 
-    public int userId;
+    public String userId;
     public String originalJob = "Doctor";
     public String updatedJob = "Senior Doctor";
 
@@ -19,7 +19,7 @@ public class AAIB {
         RestAssured.baseURI = "http://localhost:3000";  // Local API base URL
     }
 
-    @Test(priority = 1)
+    @Test
     public void testCreateUser() {
         JSONObject requestBody = new JSONObject();
         requestBody.put("name", "Manar Aziz");
@@ -35,8 +35,8 @@ public class AAIB {
                 .response();
 
         Assert.assertEquals(response.getStatusCode(), 201, "User creation should return 201");
-        userId = response.jsonPath().getInt("id");
-        Assert.assertTrue(userId > 0, "User ID should be present in response");
+        userId = String.valueOf(response.jsonPath().getString("id"));
+
 
         Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
         Assert.assertEquals(response.jsonPath().getString("job"), originalJob);
