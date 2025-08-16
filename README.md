@@ -1,218 +1,82 @@
-<<<<<<< HEAD
-# AAIB Technical Assessment - API Automation
+Based on your script, here's a brief explanation of your approach and the tools used:
 
-## Project Overview
+## **Approach Explanation**
 
-This project implements automated API tests for the user management workflow using the public API available at [https://reqres.in](https://reqres.in). The tests demonstrate data extraction from responses and using that data in subsequent requests, as required by the technical assessment.
+### **Testing Strategy:**
+Your approach implements a **sequential user management workflow** that follows the CRUD (Create, Read, Update, Delete) operations pattern. The tests are designed to:
 
-## Features Implemented
+1. **Create** a new user and capture the generated ID
+2. **Update** the user's information using the captured ID
+3. **Verify** the update by retrieving the user details
+4. **Delete** the user
+5. **Confirm** deletion by attempting to retrieve the deleted user
 
-### ✅ Complete User Management Workflow
-1. **Create User**: POST /api/users (captures ID from response)
-2. **Update User**: PUT /api/users/{id} (updates job using captured ID)
-3. **Get User**: GET /api/users/{id} (verifies job was updated)
-4. **Delete User**: DELETE /api/users/{id}
-5. **Verify Deletion**: GET /api/users/{id} (verifies user is not found - 404)
+### **Key Implementation Features:**
+- **Data Extraction**: Captures the user ID from the POST response and uses it in subsequent requests
+- **State Management**: Maintains test state by storing the `userId` as a class variable
+- **Sequential Execution**: Tests are designed to run in order, with each test depending on the previous one
+- **Comprehensive Validation**: Validates both status codes and response body content
 
-### ✅ Key Testing Features
-- **Data Extraction**: Captures user ID from POST response and uses it in subsequent requests
-- **Comprehensive Assertions**: Validates status codes, response bodies, and data integrity
-- **Test Prioritization**: Uses TestNG priority annotations for proper test execution order
-- **Allure Reporting**: Integrated test reporting with detailed test execution results
-- **Proper Error Handling**: Validates expected error responses (404 for deleted users)
+## **Tools Used**
 
-## Technology Stack
+### **1. Java Programming Language**
+- **Version**: Java 21 (as specified in pom.xml)
+- **Purpose**: Core programming language for test automation
 
-- **Language**: Java 21
-- **Build Tool**: Maven
-- **Testing Framework**: TestNG
-- **API Testing**: Rest Assured 5.5.4
-- **Reporting**: Allure Framework 2.24.0
-- **JSON Handling**: Jackson & JSON Simple
-- **API Endpoint**: https://reqres.in
+### **2. Rest Assured Framework**
+- **Version**: 5.5.4
+- **Purpose**: HTTP client library for API testing
+- **Key Features Used**:
+  - `given()` - Request specification
+  - `when()` - HTTP method execution
+  - `then()` - Response validation
+  - `extract()` - Response extraction
+  - JSON path for data extraction
 
-## Project Structure
+### **3. TestNG Testing Framework**
+- **Version**: 7.10.2
+- **Purpose**: Test execution and assertion framework
+- **Key Features Used**:
+  - `@Test` annotations for test methods
+  - `@BeforeClass` for setup
+  - `Assert.assertEquals()` for validations
+  - Test prioritization and execution control
 
-```
-AAIB-PROJECT/
-├── pom.xml                          # Maven configuration with dependencies
-├── README.md                        # Project documentation
-└── src/
-    ├── main/java/org/example/
-    │   └── Main.java               # Main application class
-    └── test/java/
-        └── AAIB.java               # API test automation suite
-```
+### **4. JSON Simple Library**
+- **Version**: 1.1
+- **Purpose**: JSON object creation and manipulation
+- **Usage**: Creating request bodies for API calls
 
-## Test Cases
+### **5. Maven Build Tool**
+- **Purpose**: Dependency management and project build
+- **Configuration**: Defined in `pom.xml` with all necessary dependencies
 
-### Individual Test Methods
-1. `testCreateUser()` - Creates user and captures ID
-2. `testUpdateUser()` - Updates user job using captured ID
-3. `testGetUser()` - Retrieves user details and verifies update
-4. `testDeleteUser()` - Deletes the user
-5. `testVerifyDeletion()` - Verifies user is not found after deletion
+## **Technical Approach Details**
 
-### Complete Workflow Test
-- `testCompleteUserWorkflow()` - End-to-end test covering all operations in sequence
+### **API Endpoint Strategy:**
+- **Base URL**: `http://localhost:3000` (local development server)
+- **Endpoints**:
+  - `POST /data` - Create user
+  - `PUT /data/{id}` - Update user
+  - `GET /data/{id}` - Retrieve user
+  - `DELETE /data/{id}` - Delete user
 
-## Setup and Execution
+### **Data Flow:**
+1. **Create**: POST request → Extract ID from response → Store in `userId`
+2. **Update**: PUT request using stored `userId`
+3. **Verify**: GET request to confirm update
+4. **Delete**: DELETE request using stored `userId`
+5. **Confirm**: GET request expecting 404 response
 
-### Prerequisites
-- Java 21 or higher
-- Maven 3.6 or higher
-
-### Running Tests
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd AAIB-PROJECT
-   ```
-
-2. **Run tests with Maven**
-   ```bash
-   mvn clean test
-   ```
-
-3. **Generate Allure Report**
-   ```bash
-   mvn allure:report
-   ```
-
-4. **Open Allure Report**
-   ```bash
-   mvn allure:serve
-   ```
-
-### Alternative Test Execution
-
-Run specific test methods:
-```bash
-mvn test -Dtest=AAIB#testCreateUser
-```
-
-Run with detailed output:
-```bash
-mvn test -Dtest=AAIB -Dmaven.test.failure.ignore=true
-```
-
-## Test Results and Reporting
-
-### Allure Report Features
-- **Test Execution Summary**: Overview of passed/failed tests
-- **Detailed Test Steps**: Step-by-step execution details
-- **Request/Response Logs**: API call details and responses
-- **Test Categories**: Organized by Epic, Feature, Story, and Severity
-- **Timeline View**: Test execution timeline
-- **Trends**: Historical test execution trends
-
-### Report Location
-- **Results**: `target/allure-results/`
-- **Generated Report**: `target/allure-report/`
-
-## API Endpoints Tested
-
-| Method | Endpoint | Description | Expected Status |
-|--------|----------|-------------|-----------------|
-| POST | /api/users | Create new user | 201 |
-| PUT | /api/users/{id} | Update user | 200 |
-| GET | /api/users/{id} | Get user details | 200 |
-| DELETE | /api/users/{id} | Delete user | 204 |
-| GET | /api/users/{id} | Verify deletion | 404 |
-
-## Key Implementation Details
-
-### Data Extraction Pattern
-```java
-// Extract ID from POST response
-int userId = response.jsonPath().getInt("id");
-
-// Use extracted ID in subsequent requests
-.put("/api/users/" + userId)
-```
-
-### Assertion Strategy
-- **Status Code Validation**: Ensures correct HTTP response codes
+### **Validation Strategy:**
+- **Status Code Validation**: Ensures correct HTTP response codes (201, 200, 404)
 - **Response Body Validation**: Verifies data integrity and updates
-- **Error Response Validation**: Confirms proper error handling (404 for deleted users)
+- **Error Handling**: Confirms proper error responses for deleted resources
 
-### Test Organization
-- **Priority-based Execution**: Uses TestNG @Test(priority) for proper sequence
-- **Allure Annotations**: @Epic, @Feature, @Story, @Description, @Severity for reporting
-- **Setup Method**: @BeforeClass for base URI configuration
+### **Test Execution Pattern:**
+- **Sequential**: Tests must run in order due to data dependencies
+- **Stateful**: Maintains state between tests using class variables
+- **Isolated**: Each test focuses on a specific operation
+- **Comprehensive**: Covers all CRUD operations with proper verification
 
-## Assessment Compliance
-
-This implementation fully satisfies the Section 3 requirements:
-
-✅ **Complete User Management Workflow**: All 5 required operations implemented  
-✅ **Data Extraction**: ID captured from POST response and used in subsequent requests  
-✅ **Popular Framework**: Java with Rest Assured and TestNG  
-✅ **Approach Documentation**: Comprehensive README with tools and approach explanation  
-✅ **Test Reporting**: Allure integration for detailed test execution results  
-✅ **GitHub Repository**: Ready for repository hosting with complete source code  
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Maven Dependencies**: Run `mvn clean install` if dependency issues occur
-2. **Java Version**: Ensure Java 21 is installed and JAVA_HOME is set correctly
-3. **Network Issues**: Verify internet connectivity for reqres.in API access
-4. **Allure Report**: Install Allure command-line tool if report generation fails
-
-### Debug Mode
-Run tests with debug output:
-```bash
-mvn test -X -Dtest=AAIB
-```
-
-## Future Enhancements
-
-- **Data-Driven Testing**: Support for multiple test data sets
-- **Parallel Execution**: TestNG parallel execution for faster test runs
-- **CI/CD Integration**: GitHub Actions or Jenkins pipeline integration
-- **Performance Testing**: Response time validation
-- **Security Testing**: Authentication and authorization scenarios
-=======
-# AAIB RestAssured API Testing
-
-This project demonstrates how to test a simple REST API using **Java**, **RestAssured**, and **TestNG**.  
-It includes test cases for:
-- `GET` request
-- `POST` request
-- `DELETE` request
-
----
-
-## 🛠️ Prerequisites
-Make sure you have the following installed:
-- Java 8+  
-- Maven or Gradle  
-- TestNG  
-- RestAssured dependency  
-
-Add RestAssured and JSON Simple dependencies in your **`pom.xml`** (if using Maven):
-
-```xml
-<dependencies>
-    <dependency>
-        <groupId>io.rest-assured</groupId>
-        <artifactId>rest-assured</artifactId>
-        <version>5.4.0</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>7.10.2</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.googlecode.json-simple</groupId>
-        <artifactId>json-simple</artifactId>
-        <version>1.1.1</version>
-    </dependency>
-</dependencies>
->>>>>>> bf4d878374c376ba4e98d705040beb98b3f11796
+This approach demonstrates a solid understanding of API testing principles, data extraction techniques, and automated test workflow design.
