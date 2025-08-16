@@ -11,8 +11,8 @@ import static io.restassured.RestAssured.given;
 public class AAIB {
 
     public String userId;
-    public String originalJob = "Doctor";
-    public String updatedJob = "Senior Doctor";
+    public String originalJob = "Tester";
+    public String updatedJob = "Senior tester";
 
     @BeforeClass
     public void setup() {
@@ -44,7 +44,7 @@ public class AAIB {
         System.out.println("Created user with ID: " + userId);
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreateUser")
     public void testUpdateUser() {
         JSONObject updateBody = new JSONObject();
         updateBody.put("name", "Manar Aziz");
@@ -59,13 +59,18 @@ public class AAIB {
                 .extract()
                 .response();
 
-        Assert.assertEquals(response.getStatusCode(), 200, "User update should return 200");
         Assert.assertEquals(response.jsonPath().getString("job"), updatedJob);
+        Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
+        Assert.assertEquals(response.statusCode(), 200, "User update should return 200");
 
         System.out.println("User updated successfully: " + response.asString());
+        System.out.println("User ID: " + userId);
+        System.out.println("Updated user with ID: " + userId);
+        System.out.println("Updated user with name: " + updatedJob);
+
     }
 
-    @Test
+    @Test(dependsOnMethods = "testUpdateUser")
     public void testGetUserAfterUpdate() {
         Response response = given()
                 .when()
@@ -80,7 +85,7 @@ public class AAIB {
         System.out.println("Verified updated user: " + response.asString());
     }
 
-    @Test
+    @Test(dependsOnMethods = "testGetUserAfterUpdate")
     public void testDeleteUser() {
         Response response = given()
                 .when()
@@ -94,7 +99,7 @@ public class AAIB {
         System.out.println("User deleted successfully");
     }
 
-    @Test
+    @Test(dependsOnMethods = "testDeleteUser")
     public void testVerifyUserDeletion() {
         Response response = given()
                 .when()
@@ -106,5 +111,7 @@ public class AAIB {
         Assert.assertEquals(response.getStatusCode(), 404, "Deleted user should return 404");
 
         System.out.println("Verified user deletion (404)");
+        Assert.assertTrue(response.getTime() < 2000, "API response should be < 2s");
+
     }
 }
