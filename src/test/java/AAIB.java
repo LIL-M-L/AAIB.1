@@ -41,7 +41,7 @@ public class AAIB {
         Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
         Assert.assertEquals(response.jsonPath().getString("job"), originalJob);
 
-        System.out.println("✅ Created user with ID: " + userId);
+        System.out.println("Created user with ID: " + userId);
     }
 
     @Test(priority = 2)
@@ -62,7 +62,7 @@ public class AAIB {
         Assert.assertEquals(response.getStatusCode(), 200, "User update should return 200");
         Assert.assertEquals(response.jsonPath().getString("job"), updatedJob);
 
-        System.out.println("✅ User updated successfully: " + response.asString());
+        System.out.println("User updated successfully: " + response.asString());
     }
 
     @Test(priority = 3)
@@ -91,7 +91,7 @@ public class AAIB {
 
         Assert.assertEquals(response.getStatusCode(), 200, "User deletion should return 200");
 
-        System.out.println("✅ User deleted successfully");
+        System.out.println("User deleted successfully");
     }
 
     @Test(priority = 5)
