@@ -30,7 +30,7 @@ public class AAIB {
                 .header("x-api-key", "reqres-free-v1")
                 .body(requestBody.toString())
                 .when()
-                .post("/users")   // ✅ ReqRes users endpoint
+                .post("/users")   
                 .then()
                 .extract()
                 .response();
@@ -55,7 +55,7 @@ public class AAIB {
                 .header("x-api-key", "reqres-free-v1")
                 .body(updateBody.toString())
                 .when()
-                .put("/users/" + userId)  // ✅ update user
+                .put("/users/" + userId)  
                 .then()
                 .extract()
                 .response();
@@ -76,7 +76,6 @@ public class AAIB {
                 .extract()
                 .response();
 
-        // ⚠️ ReqRes won’t persist changes, but will return either static data or 404
         Assert.assertTrue(response.getStatusCode() == 200 || response.getStatusCode() == 404,
                 "Get user should return 200 or 404 (mock API behavior)");
 
@@ -114,3 +113,4 @@ public class AAIB {
         System.out.println("Verified user deletion, status: " + response.getStatusCode());
     }
 }
+
