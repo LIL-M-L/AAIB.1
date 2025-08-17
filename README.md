@@ -42,7 +42,6 @@ AAIB-PROJECT/
  │    └── AAIB.java          # Main test class
  ├── pom.xml                 # Maven dependencies
  ├── README.md               # Documentation
- └── allure-results/         # (Optional) Test report results
 ```
 
 ---
@@ -52,8 +51,7 @@ AAIB-PROJECT/
 ### **1. Clone the Repo**
 
 ```bash
-git clone https://github.com/<your-username>/AAIB-REPO.git
-cd AAIB-REPO
+git clone (https://github.com/LIL-M-L/AAIB.1)
 ```
 
 ### **2. Run with Maven**
@@ -62,24 +60,7 @@ cd AAIB-REPO
 mvn clean test
 ```
 
-### **3. Run Specific Test (Optional)**
 
-```bash
-mvn -Dtest=AAIB test
-```
-
----
-
-## ** Test Reporting**
-
-* Integrated with **Allure Reports** (optional).
-* To generate report:
-
-```bash
-mvn allure:serve
-```
-
----
 
 ## ** Sample Test Flow**
 
