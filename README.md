@@ -1,4 +1,4 @@
-Based on your script, here's a brief explanation of your approach and the tools used:
+
 
 ## **Approach Explanation**
 
