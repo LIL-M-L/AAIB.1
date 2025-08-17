@@ -1,103 +1,102 @@
 
+---
 
-# API Automation Testing with Rest Assured & TestNG
+# **AAIB API Automation Tests**
+
+This project contains **API test automation scripts** using **Java, RestAssured, TestNG, and JSON-Simple**.
+It demonstrates **CRUD operations** (Create, Read, Update, Delete) on the [ReqRes](https://reqres.in/) sample API.
 
 ---
 
-## Approach Explanation
+## **Features Tested**
 
-### Testing Strategy:
-Your approach implements a sequential **User Management Workflow** that follows the **CRUD (Create, Read, Update, Delete)** operations pattern.  
-The tests are designed to:
+The script covers a **full user lifecycle workflow**:
 
-1. **Create** a new user and capture the generated ID  
-2. **Update** the user's information using the captured ID  
-3. **Verify** the update by retrieving the user details  
-4. **Delete** the user  
-5. **Confirm Deletion** by attempting to retrieve the deleted user  
+1. **Create User** → `POST /users`
+2. **Update User** → `PUT /users/{id}`
+3. **Get User (after update)** → `GET /users/{id}`
+4. **Delete User** → `DELETE /users/{id}`
+5. **Verify User Deletion** → `GET /users/{id}`
 
----
-
-### Key Implementation Features:
-- **Data Extraction**: Captures the user ID from the `POST` response and reuses it in subsequent requests  
-- **State Management**: Maintains test state by storing the `userId` as a class variable  
-- **Sequential Execution**: Tests are designed to run in order using TestNG’s dependency mechanism  
-- **Comprehensive Validation**: Validates both **status codes** and **response body content**  
+> Note: The ReqRes API is a **mock API**. It does not persist updates or deletions. Responses may return `200`, `201`, `204`, or `404` depending on API behavior.
 
 ---
 
-## Tools Used
+## **Tools & Dependencies**
 
-### 1. Java Programming Language
-- **Version**: Java 21 (as specified in `pom.xml`)  
-- **Purpose**: Core programming language for test automation  
+* **Java 21**
+* **RestAssured 5.x** – API automation library
+* **TestNG 7.x** – test framework & assertions
+* **JSON-Simple 1.x** – JSON request body handling
+* **Maven** – build & dependency management
 
-### 2. Rest Assured Framework
-- **Version**: 5.5.4  
-- **Purpose**: HTTP client library for API testing  
-- **Key Features Used**:  
-  - `given()` → Request specification  
-  - `when()` → HTTP method execution  
-  - `then()` → Response validation  
-  - `extract()` → Response extraction  
-  - JSONPath for parsing and data extraction  
-
-### 3. TestNG Testing Framework
-- **Version**: 7.10.2  
-- **Purpose**: Test execution and assertion framework  
-- **Key Features Used**:  
-  - `@Test` annotations for test methods  
-  - `@BeforeClass` for setup configuration  
-  - `Assert.assertEquals()` for validations  
-  - Test prioritization and **dependent test execution**  
-
-### 4. JSON Simple Library
-- **Version**: 1.1  
-- **Purpose**: JSON object creation and manipulation  
-- **Usage**: Constructing request bodies for API calls  
-
-### 5. Maven Build Tool
-- **Purpose**: Dependency management and project build automation  
-- **Configuration**: All dependencies defined in `pom.xml`  
+Dependencies are defined in `pom.xml`.
 
 ---
 
-## Technical Approach Details
+## ** Project Structure**
 
-### API Endpoint Strategy:
-- **Base URL**: `http://localhost:3000` (local development server)  
-- **Endpoints**:  
-  - `POST /data` → Create user  
-  - `PUT /data/{id}` → Update user  
-  - `GET /data/{id}` → Retrieve user  
-  - `DELETE /data/{id}` → Delete user  
-
----
-
-### Data Flow:
-1. **Create**: `POST` request → Extract ID from response → Store in `userId`  
-2. **Update**: `PUT` request using stored `userId`  
-3. **Verify**: `GET` request to confirm updated details  
-4. **Delete**: `DELETE` request using stored `userId`  
-5. **Confirm**: `GET` request expecting `404 Not Found`  
+```
+AAIB-PROJECT/
+ ├── src/test/java/
+ │    └── AAIB.java          # Main test class
+ ├── pom.xml                 # Maven dependencies
+ ├── README.md               # Documentation
+ └── allure-results/         # (Optional) Test report results
+```
 
 ---
 
-### Validation Strategy:
-- **Status Code Validation**: Ensures correct HTTP response codes (`201`, `200`, `404`)  
-- **Response Body Validation**: Confirms data integrity after each operation  
-- **Error Handling**: Validates correct handling of deleted/non-existent resources  
+## **Running the Tests**
+
+### **1. Clone the Repo**
+
+```bash
+git clone https://github.com/<your-username>/AAIB-REPO.git
+cd AAIB-REPO
+```
+
+### **2. Run with Maven**
+
+```bash
+mvn clean test
+```
+
+### **3. Run Specific Test (Optional)**
+
+```bash
+mvn -Dtest=AAIB test
+```
 
 ---
 
-### Test Execution Pattern:
-- **Sequential**: Tests run in defined order due to data dependencies  
-- **Stateful**: Maintains state across tests with shared variables (`userId`)  
-- **Isolated**: Each test verifies a distinct CRUD operation  
-- **Comprehensive**: Covers full CRUD lifecycle with proper assertions  
+## ** Test Reporting**
+
+* Integrated with **Allure Reports** (optional).
+* To generate report:
+
+```bash
+mvn allure:serve
+```
 
 ---
 
-## Summary
-This approach demonstrates a solid understanding of **API testing principles**, **data extraction techniques**, and **automated test workflow design**.  
-It ensures reliability through **status code checks**, **data validation**, and **error response verification**, making it a strong API automation framework example.
+## ** Sample Test Flow**
+
+1. Create user → Assert **201 Created**
+2. Update user → Assert **200 OK**
+3. Fetch user → Assert **200 or 404**
+4. Delete user → Assert **204 No Content**
+5. Verify deletion → Assert **404 or 200 (mock response)**
+
+---
+
+## **Notes**
+
+* This project uses **ReqRes ([https://reqres.in/](https://reqres.in/))**, a public mock API for testing.
+* Data persistence is **not guaranteed**.
+* The `"x-api-key"` header is a **dummy header** for demonstration only.
+
+---
+
+
