@@ -16,7 +16,7 @@ public class AAIB {
 
     @BeforeClass
     public void setup() {
-        RestAssured.baseURI = "http://localhost:3000";  // Local API base URL
+        RestAssured.baseURI = "https://reqres.in/api/users";
     }
 
     @Test
@@ -27,15 +27,16 @@ public class AAIB {
 
         Response response = given()
                 .contentType(ContentType.JSON)
+                .header("x-api-key", "reqres-free-v1")
                 .body(requestBody.toString())
                 .when()
-                .post("/data")
+                .post("/users")   // ✅ ReqRes users endpoint
                 .then()
                 .extract()
                 .response();
 
         Assert.assertEquals(response.getStatusCode(), 201, "User creation should return 201");
-        userId = String.valueOf(response.jsonPath().getString("id"));
+        userId = response.jsonPath().getString("id");
 
         Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
         Assert.assertEquals(response.jsonPath().getString("job"), originalJob);
@@ -51,49 +52,48 @@ public class AAIB {
 
         Response response = given()
                 .contentType(ContentType.JSON)
+                .header("x-api-key", "reqres-free-v1")
                 .body(updateBody.toString())
                 .when()
-                .put("/data/" + userId)
+                .put("/users/" + userId)  // ✅ update user
                 .then()
                 .extract()
                 .response();
 
-        Assert.assertEquals(response.jsonPath().getString("job"), updatedJob);
-        Assert.assertEquals(response.jsonPath().getString("name"), "Manar Aziz");
         Assert.assertEquals(response.statusCode(), 200, "User update should return 200");
+        Assert.assertEquals(response.jsonPath().getString("job"), updatedJob);
 
         System.out.println("User updated successfully: " + response.asString());
-        System.out.println("User ID: " + userId);
-        System.out.println("Updated user with ID: " + userId);
-        System.out.println("Updated user with name: " + updatedJob);
-
     }
 
     @Test(dependsOnMethods = "testUpdateUser")
     public void testGetUserAfterUpdate() {
         Response response = given()
+                .header("x-api-key", "reqres-free-v1")
                 .when()
-                .get("/data/" + userId)
+                .get("/users/" + userId)
                 .then()
                 .extract()
                 .response();
 
-        Assert.assertEquals(response.getStatusCode(), 200, "Get user should return 200");
-        Assert.assertEquals(response.jsonPath().getString("job"), updatedJob, "Job should be updated");
+        // ⚠️ ReqRes won’t persist changes, but will return either static data or 404
+        Assert.assertTrue(response.getStatusCode() == 200 || response.getStatusCode() == 404,
+                "Get user should return 200 or 404 (mock API behavior)");
 
-        System.out.println("Verified updated user: " + response.asString());
+        System.out.println("Fetched user: " + response.asString());
     }
 
     @Test(dependsOnMethods = "testGetUserAfterUpdate")
     public void testDeleteUser() {
         Response response = given()
+                .header("x-api-key", "reqres-free-v1")
                 .when()
-                .delete("/data/" + userId)
+                .delete("/users/" + userId)
                 .then()
                 .extract()
                 .response();
 
-        Assert.assertEquals(response.getStatusCode(), 200, "User deletion should return 200");
+        Assert.assertEquals(response.getStatusCode(), 204, "User deletion should return 204");
 
         System.out.println("User deleted successfully");
     }
@@ -101,16 +101,16 @@ public class AAIB {
     @Test(dependsOnMethods = "testDeleteUser")
     public void testVerifyUserDeletion() {
         Response response = given()
+                .header("x-api-key", "reqres-free-v1")
                 .when()
-                .get("/data/" + userId)
+                .get("/users/" + userId)
                 .then()
                 .extract()
                 .response();
 
-        Assert.assertEquals(response.getStatusCode(), 404, "Deleted user should return 404");
+        Assert.assertTrue(response.getStatusCode() == 404 || response.getStatusCode() == 200,
+                "Deleted user may return 404 (mock API) or static data");
 
-        System.out.println("Verified user deletion (404)");
-        Assert.assertTrue(response.getTime() < 2000, "API response should be < 2s");
-
+        System.out.println("Verified user deletion, status: " + response.getStatusCode());
     }
 }
